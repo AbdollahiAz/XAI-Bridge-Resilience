@@ -40,7 +40,7 @@ def main():
 
     # ─── Main page header ─────────────────────────────────────────────────────────
     st.title("🔍 Shapley Value Estimation for Flood-Resilient Aging Bridges")
-    st.write("**💻 Developers: Ali Amini, Azam Abdollahi, Sotirios A. Argyroudis, Yazhou (Tim) Xie, and Stergios A. Mitoulis**")
+    st.write("**💻 Developers: Ali Amini, Azam Abdollahi, Yazhou (Tim) Xie, Sotirios A. Argyroudis, and Stergios A. Mitoulis**")
     st.write(
         "✅ Select input parameters to retrieve the true and predicted resilience indices and the corresponding SHAP waterfall plots. In addition, SHAP beeswarm plots offer bird's eye view of feature importance for the corresponding age:\n\n"
         "- VAEAC (dependency-aware conditional Shapley value ) approach  \n"
@@ -211,12 +211,12 @@ def main():
         """
     📜**Disclaimer:**
 
-    - This work is part of a manuscript titled ***Accuracy–Efficiency Trade-off for Data-Driven Explainability: Flood-Resilient Aging Bridges*** submitted to *Nature Sustainability*. It has not yet been peer reviewed, and any reference to this work should be postponed until after its acceptance.
+    - This work is part of a manuscript titled ***Explainable AI reveals modeling can outweigh aging in infrastructure resilience***. It has not yet been peer reviewed, and any reference to this work should be postponed until after its acceptance.
     - If you have any questions, please contact:
         - A. Amini ([ali.amini@mail.mcgill.ca](mailto:ali.amini@mail.mcgill.ca))
         - A. Abdollahi ([azam.abdollahi2024@gmail.com](mailto:azam.abdollahi2024@gmail.com))
+         - Y. Xie ([tim.xie@mcgill.ca](mailto:tim.xie@mcgill.ca))
         - S. A. Argyroudis ([sotirios.argyroudis@brunel.ac.uk](mailto:sotirios.argyroudis@brunel.ac.uk))
-        - Y. Xie ([tim.xie@mcgill.ca](mailto:tim.xie@mcgill.ca))
         - S. A. Mitoulis ([s.mitoulis@ucl.ac.uk](mailto:s.mitoulis@ucl.ac.uk))
         """
     )
