@@ -215,7 +215,11 @@ def main():
     - If you have any questions, please contact:
         - A. Amini ([ali.amini@mail.mcgill.ca](mailto:ali.amini@mail.mcgill.ca))
         - A. Abdollahi ([azam.abdollahi2024@gmail.com](mailto:azam.abdollahi2024@gmail.com))
+<<<<<<< HEAD
          - Y. Xie ([tim.xie@mcgill.ca](mailto:tim.xie@mcgill.ca))
+=======
+        - Y. Xie ([tim.xie@mcgill.ca](mailto:tim.xie@mcgill.ca))
+>>>>>>> 711b814 (Update XAI_Bridge_Main.py)
         - S. A. Argyroudis ([sotirios.argyroudis@brunel.ac.uk](mailto:sotirios.argyroudis@brunel.ac.uk))
         - S. A. Mitoulis ([s.mitoulis@ucl.ac.uk](mailto:s.mitoulis@ucl.ac.uk))
         """
