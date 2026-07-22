@@ -204,17 +204,20 @@ def main():
         st.error("Both SHAP files must contain a column named 'base'.")
         return
 
-    feat_names = [column for column in shap_df_va.columns if column != "base"]
+    # Keep the original Excel headers for reading values, but use clean
+    # mathematical labels only for displaying the SHAP plots.
+    shap_feature_columns = [
+        column for column in shap_df_va.columns if column != "base"
+    ]
 
-    if not feat_names:
+    if not shap_feature_columns:
         st.error("No feature columns were found in the VAEAC SHAP file.")
         return
 
     missing_in_ind = [
-        feature for feature in feat_names if feature not in shap_df_ind.columns
-    ]
-    missing_in_year = [
-        feature for feature in feat_names if feature not in year_df.columns
+        feature
+        for feature in shap_feature_columns
+        if feature not in shap_df_ind.columns
     ]
 
     if missing_in_ind:
@@ -224,10 +227,45 @@ def main():
         )
         return
 
-    if missing_in_year:
+    # The SHAP spreadsheets may contain older LaTeX column names that do not
+    # exactly match the headers in the Year spreadsheet. The model features are
+    # therefore aligned by their established column order.
+    target_col = year_df.columns[-1]
+    year_feature_columns = [
+        column for column in year_df.columns if column != target_col
+    ]
+
+    if len(year_feature_columns) != len(shap_feature_columns):
         st.error(
-            "The Year file is missing these feature columns: "
-            + ", ".join(missing_in_year)
+            "The Year file and SHAP files do not contain the same number of "
+            f"features. Year file: {len(year_feature_columns)}; "
+            f"SHAP file: {len(shap_feature_columns)}."
+        )
+        st.write("Year feature columns:", year_feature_columns)
+        st.write("SHAP feature columns:", shap_feature_columns)
+        return
+
+    # Clean labels shown in waterfall and beeswarm plots.
+    display_feature_names = [
+        r"$\mathrm{Time}$",
+        r"$D_{\mathrm{sc}}$",
+        r"$\mathrm{Span}\,\#$",
+        r"$\mathrm{Env}_{\mathrm{cond}}$",
+        r"$\Pr(\mathrm{DS}_{\mathrm{no}})$",
+        r"$\Pr(\mathrm{DS}_{\mathrm{min}})$",
+        r"$\Pr(\mathrm{DS}_{\mathrm{mod}})$",
+        r"$\Pr(\mathrm{DS}_{\mathrm{ext}})$",
+        r"$\Pr(\mathrm{DS}_{\mathrm{sev}})$",
+        r"$\mathrm{Rest}_{\mathrm{min}}$",
+        r"$\mathrm{Rest}_{\mathrm{mod}}$",
+        r"$\mathrm{Rest}_{\mathrm{ext}}$",
+        r"$\mathrm{Rest}_{\mathrm{sev}}$",
+    ]
+
+    if len(display_feature_names) != len(shap_feature_columns):
+        st.error(
+            "The number of display labels does not match the number of "
+            "model features."
         )
         return
 
@@ -270,7 +308,6 @@ def main():
     # ─── Show the true resilience value ───────────────────────────────────────────
     st.subheader("True resilience index")
 
-    target_col = year_df.columns[-1]
     true_val = pd.to_numeric(
         pd.Series([matches.iloc[0][target_col]]),
         errors="coerce",
@@ -285,14 +322,14 @@ def main():
     st.write(f"**{target_col} = {true_val:.6f}**")
 
     # ─── Prepare feature values for the selected row ──────────────────────────────
-    selected_features = matches.loc[:, feat_names].iloc[0]
+    selected_features = matches.loc[:, year_feature_columns].iloc[0]
     feat_values = selected_features.to_numpy()[np.newaxis, :]
 
     # ─── Build a one-row SHAP Explanation ─────────────────────────────────────────
     def make_row_explanation(shap_df):
         base_value = float(shap_df.at[row_idx, "base"])
         shap_values = (
-            shap_df.loc[row_idx, feat_names]
+            shap_df.loc[row_idx, shap_feature_columns]
             .astype(float)
             .to_numpy()
         )
@@ -301,7 +338,7 @@ def main():
             values=shap_values[np.newaxis, :],
             base_values=np.array([base_value]),
             data=feat_values,
-            feature_names=feat_names,
+            feature_names=display_feature_names,
         )
 
     try:
@@ -330,7 +367,7 @@ def main():
         plt.figure(figsize=(8, 7), dpi=110)
         shap.plots.waterfall(
             explanation[0],
-            max_display=len(feat_names),
+            max_display=len(display_feature_names),
             show=False,
         )
 
@@ -362,20 +399,27 @@ def main():
         render_waterfall(expl_ind_row, "Independence – Waterfall")
 
     # ─── Build full-data SHAP Explanations for beeswarm plots ─────────────────────
-    bees_data = year_df.loc[:, feat_names].copy()
+    bees_data = year_df.loc[:, year_feature_columns].copy()
 
-    env_column = "$Env_{cond}$"
-    if env_column in bees_data.columns:
-        bees_data[env_column] = bees_data[env_column].map(env_labels)
+    # Keep numerical values for reliable SHAP coloring.
+    for column in bees_data.columns:
+        bees_data[column] = pd.to_numeric(bees_data[column], errors="coerce")
+
+    if bees_data.isna().any().any():
+        st.error(
+            "At least one feature column in the Year file contains a "
+            "non-numeric or missing value."
+        )
+        return
 
     try:
         va_values = (
-            shap_df_va.loc[:, feat_names]
+            shap_df_va.loc[:, shap_feature_columns]
             .astype(float)
             .to_numpy()
         )
         ind_values = (
-            shap_df_ind.loc[:, feat_names]
+            shap_df_ind.loc[:, shap_feature_columns]
             .astype(float)
             .to_numpy()
         )
@@ -396,14 +440,14 @@ def main():
         values=va_values,
         base_values=va_base_values,
         data=bees_data.to_numpy(),
-        feature_names=feat_names,
+        feature_names=display_feature_names,
     )
 
     expl_ind_all = Explanation(
         values=ind_values,
         base_values=ind_base_values,
         data=bees_data.to_numpy(),
-        feature_names=feat_names,
+        feature_names=display_feature_names,
     )
 
     def render_beeswarm(explanation, title):
@@ -412,7 +456,7 @@ def main():
         plt.figure(figsize=(8, 7), dpi=110)
         shap.plots.beeswarm(
             explanation,
-            max_display=len(feat_names),
+            max_display=len(display_feature_names),
             show=False,
         )
 
