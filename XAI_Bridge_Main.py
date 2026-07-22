@@ -40,11 +40,10 @@ def main():
 
     # ─── Main page header ─────────────────────────────────────────────────────────
     st.title("🔍 Shapley Value Estimation for Flood-Resilient Aging Bridges")
-    st.write("**💻 Developers: Ali Amini, Azam Abdollahi, Yazhou (Tim) Xie, Sotirios A. Argyroudis, and Stergios A. Mitoulis**")
     st.write(
         "✅ Select input parameters to retrieve the true and predicted resilience indices and the corresponding SHAP waterfall plots. In addition, SHAP beeswarm plots offer bird's eye view of feature importance for the corresponding age:\n\n"
         "- VAEAC (dependency-aware conditional Shapley value ) approach  \n"
-        "- Independence approach (marginal Shapley value)"
+        "- Independence (marginal Shapley value) approach"
     )
 
   # ─── Four bullet-rows ──────────────────────────────────────────────────────────
@@ -65,8 +64,8 @@ def main():
     )
 
     # Row 3: damage-state probabilities
-    st.markdown(
-        "- $DS_{no}$, $DS_{min}$, $DS_{mod}$, $DS_{ext}$, $DS_{sev}$: "
+    st.markdown(    
+        "- $\Pr(DS_{\no})$, $\Pr(DS_{\min})$, $\Pr(DS_{\mod})$, $\Pr(DS_{\ext})$, $\Pr(DS_{\sev})$: "
         "Probability of being in no, minor, moderate, extensive, "
         "and severe damage states"
     )
@@ -211,17 +210,13 @@ def main():
         """
     📜**Disclaimer:**
 
-    - This work is part of a manuscript titled ***Explainable AI reveals modeling can outweigh aging in infrastructure resilience***. It has not yet been peer reviewed, and any reference to this work should be postponed until after its acceptance.
-    - If you have any questions, please contact:
-        - A. Amini ([ali.amini@mail.mcgill.ca](mailto:ali.amini@mail.mcgill.ca))
-        - A. Abdollahi ([azam.abdollahi2024@gmail.com](mailto:azam.abdollahi2024@gmail.com))
-<<<<<<< HEAD
-         - Y. Xie ([tim.xie@mcgill.ca](mailto:tim.xie@mcgill.ca))
-=======
-        - Y. Xie ([tim.xie@mcgill.ca](mailto:tim.xie@mcgill.ca))
->>>>>>> 711b814 (Update XAI_Bridge_Main.py)
-        - S. A. Argyroudis ([sotirios.argyroudis@brunel.ac.uk](mailto:sotirios.argyroudis@brunel.ac.uk))
-        - S. A. Mitoulis ([s.mitoulis@ucl.ac.uk](mailto:s.mitoulis@ucl.ac.uk))
+    - This work is part of a manuscript titled ***Explainable AI reveals dependence modeling can outweigh aging in infrastructure resilience assessment***. It has not yet been peer reviewed, and any reference to this work should be postponed until after its acceptance.
+    - If you have any questions, please contact developers:
+        - Ali Amini ([ali.amini@mail.mcgill.ca](mailto:ali.amini@mail.mcgill.ca))
+        - Azam Abdollahi ([azam.abdollahi2024@gmail.com](mailto:azam.abdollahi2024@gmail.com))
+        - Yazhou (Tim) Xie ([tim.xie@mcgill.ca](mailto:tim.xie@mcgill.ca))
+        - Sotirios A. Argyroudis ([sotirios.argyroudis@brunel.ac.uk](mailto:sotirios.argyroudis@brunel.ac.uk))
+        - Stergios A. Mitoulis ([s.mitoulis@ucl.ac.uk](mailto:s.mitoulis@ucl.ac.uk))
         """
     )
 
