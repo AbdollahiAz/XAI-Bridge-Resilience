@@ -414,19 +414,28 @@ def main():
 
     # Display the environmental-condition feature as a categorical variable.
     # SHAP renders categorical/string feature values in gray in beeswarm plots.
+    # Assign by column name rather than .iloc so pandas can safely change the
+    # column dtype from numeric to object/string.
     env_feature_position = 3
-    bees_data.iloc[:, env_feature_position] = (
-        bees_data.iloc[:, env_feature_position]
-        .astype(int)
+    env_feature_column = year_feature_columns[env_feature_position]
+
+    env_display_values = (
+        pd.to_numeric(
+            bees_data[env_feature_column],
+            errors="coerce",
+        )
+        .astype("Int64")
         .map(env_labels)
     )
 
-    if bees_data.iloc[:, env_feature_position].isna().any():
+    if env_display_values.isna().any():
         st.error(
             "The environmental-condition column contains values outside "
             "the expected codes 1, 2, 3, and 4."
         )
         return
+
+    bees_data[env_feature_column] = env_display_values.astype(object)
 
     try:
         va_values = (
