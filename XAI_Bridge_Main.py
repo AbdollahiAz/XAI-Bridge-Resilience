@@ -401,7 +401,7 @@ def main():
     # ─── Build full-data SHAP Explanations for beeswarm plots ─────────────────────
     bees_data = year_df.loc[:, year_feature_columns].copy()
 
-    # Keep numerical values for reliable SHAP coloring.
+    # Keep all continuous/numerical features numeric.
     for column in bees_data.columns:
         bees_data[column] = pd.to_numeric(bees_data[column], errors="coerce")
 
@@ -409,6 +409,22 @@ def main():
         st.error(
             "At least one feature column in the Year file contains a "
             "non-numeric or missing value."
+        )
+        return
+
+    # Display the environmental-condition feature as a categorical variable.
+    # SHAP renders categorical/string feature values in gray in beeswarm plots.
+    env_feature_position = 3
+    bees_data.iloc[:, env_feature_position] = (
+        bees_data.iloc[:, env_feature_position]
+        .astype(int)
+        .map(env_labels)
+    )
+
+    if bees_data.iloc[:, env_feature_position].isna().any():
+        st.error(
+            "The environmental-condition column contains values outside "
+            "the expected codes 1, 2, 3, and 4."
         )
         return
 
