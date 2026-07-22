@@ -46,7 +46,7 @@ def main():
         )
 
         sel_env = st.selectbox(
-            r"$Env_{\mathrm{cond}}$",
+            r"$\mathrm{Env}_{\mathrm{cond}}$",
             options=list(env_labels.keys()),
             format_func=lambda value: env_labels[value],
         )
@@ -119,14 +119,14 @@ def main():
         col.markdown(f"- {label}")
 
     st.markdown(
-        r"- $Env_{\mathrm{cond}}$: Environmental condition "
+        r"- $\mathrm{Env}_{\mathrm{cond}}$: Environmental condition "
         r"(benign, low, moderate, severe)"
     )
 
     st.markdown(
-        r"- $\Pr(DS_{\mathrm{no}})$, $\Pr(DS_{\mathrm{min}})$, "
-        r"$\Pr(DS_{\mathrm{mod}})$, $\Pr(DS_{\mathrm{ext}})$, and "
-        r"$\Pr(DS_{\mathrm{sev}})$: Probabilities of being in the no-damage, "
+        r"- $\Pr(\mathrm{DS}_{\mathrm{no}})$, $\Pr(\mathrm{DS}_{\mathrm{min}})$, "
+        r"$\Pr(\mathrm{DS}_{\mathrm{mod}})$, $\Pr(\mathrm{DS}_{\mathrm{ext}})$, and "
+        r"$\Pr(\mathrm{DS}_{\mathrm{sev}})$: Probabilities of being in the no-damage, "
         r"minor, moderate, extensive, and severe damage states"
     )
 
