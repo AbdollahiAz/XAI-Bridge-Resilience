@@ -40,39 +40,13 @@ def main():
     with st.sidebar:
         st.header("Input Parameters")
 
+        # 1. Bridge age
         sel_A = st.selectbox(
             r"$\mathrm{Age}\,[\mathrm{year}]$",
             [0, 20, 40, 60, 80, 100],
         )
 
-        sel_env = st.selectbox(
-            r"$\mathrm{Env}_{\mathrm{cond}}$",
-            options=list(env_labels.keys()),
-            format_func=lambda value: env_labels[value],
-        )
-
-        sel_span = st.selectbox(
-            r"$\mathrm{Span}\,\#$",
-            [1, 3, 6, 9, 12, 15, 18],
-        )
-
-        max_by_span = {
-            1: 150,
-            3: 220,
-            6: 265,
-            9: 290,
-            12: 305,
-            15: 320,
-            18: 335,
-        }
-
-        days = [1] + list(range(5, max_by_span[sel_span] + 1, 5))
-        sel_day = st.selectbox(
-            r"$\mathrm{Time}\,[\mathrm{day}]$",
-            days,
-        )
-
-        # ─── Discrete scour-depth slider ───────────────────────────────────────────
+        # 2. Scour depth: fixed discrete values
         ds_options = [
             0,
             0.25,
@@ -88,11 +62,50 @@ def main():
             4.00,
         ]
 
-        sel_sc = st.select_slider(
+        sel_sc = st.selectbox(
             r"$D_{\mathrm{sc}}\,[\mathrm{m}]$",
             options=ds_options,
-            value=0,
+            index=0,
             format_func=lambda x: f"{x:g}",
+        )
+
+        # 3. Number of spans
+        sel_span = st.selectbox(
+            r"$\mathrm{Span}\ \#$",
+            [1, 3, 6, 9, 12, 15, 18],
+        )
+
+        # 4. Post-flood time: dynamically determined by Span #
+        max_by_span = {
+            1: 150,
+            3: 220,
+            6: 265,
+            9: 290,
+            12: 305,
+            15: 320,
+            18: 335,
+        }
+
+        days = [1] + list(range(5, max_by_span[sel_span] + 1, 5))
+
+        sel_day = st.selectbox(
+            r"$\mathrm{Time}\,[\mathrm{day}]$",
+            options=days,
+            index=0,
+        )
+
+        # 5. Environmental condition
+        env_labels = {
+            1: "Benign",
+            2: "Low",
+            3: "Moderate",
+            4: "Severe",
+        }
+
+        sel_env = st.selectbox(
+            r"$\mathrm{Env}_{\mathrm{cond}}$",
+            options=list(env_labels.keys()),
+            format_func=lambda x: env_labels[x],
         )
 
         run = st.button("Run")
