@@ -65,10 +65,14 @@ def main():
 
     # Row 3: damage-state probabilities
     st.markdown(    
-        "- $\Pr(DS_{\no})$, $\Pr(DS_{\min})$, $\Pr(DS_{\mod})$, $\Pr(DS_{\ext})$, $\Pr(DS_{\sev})$: "
-        "Probability of being in no, minor, moderate, extensive, "
-        "and severe damage states"
-    )
+        st.markdown(
+    r"""
+- $\Pr(DS_{\mathrm{no}})$, $\Pr(DS_{\mathrm{min}})$, 
+  $\Pr(DS_{\mathrm{mod}})$, $\Pr(DS_{\mathrm{ext}})$, 
+  $\Pr(DS_{\mathrm{sev}})$: Probabilities of the no-damage, minor, 
+  moderate, extensive, and severe damage states
+"""
+)
 
     # Row 4: restoration ratios
     st.markdown(
