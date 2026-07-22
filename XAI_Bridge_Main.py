@@ -72,6 +72,7 @@ def main():
             days,
         )
 
+        # ─── Discrete scour-depth slider ───────────────────────────────────────────
         ds_options = [
             0,
             0.25,
@@ -86,9 +87,12 @@ def main():
             3.00,
             4.00,
         ]
-        sel_sc = st.selectbox(
+
+        sel_sc = st.select_slider(
             r"$D_{\mathrm{sc}}\,[\mathrm{m}]$",
-            ds_options,
+            options=ds_options,
+            value=0,
+            format_func=lambda x: f"{x:g}",
         )
 
         run = st.button("Run")
