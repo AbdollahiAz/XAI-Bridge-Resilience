@@ -63,14 +63,14 @@ def main():
         "(benign, low, moderate, severe)"
     )
 
-    # Row 3: damage-state probabilities
-    st.markdown(    
-        st.markdown(
+
+# Row 3: damage-state probabilities
+st.markdown(
     r"""
-- $\Pr(DS_{\mathrm{no}})$, $\Pr(DS_{\mathrm{min}})$, 
-  $\Pr(DS_{\mathrm{mod}})$, $\Pr(DS_{\mathrm{ext}})$, 
-  $\Pr(DS_{\mathrm{sev}})$: Probabilities of the no-damage, minor, 
-  moderate, extensive, and severe damage states
+- $\Pr(DS_{\mathrm{no}})$, $\Pr(DS_{\mathrm{min}})$,
+  $\Pr(DS_{\mathrm{mod}})$, $\Pr(DS_{\mathrm{ext}})$,
+  $\Pr(DS_{\mathrm{sev}})$: Probabilities of being in the no-damage,
+  minor, moderate, extensive, and severe damage states
 """
 )
 
