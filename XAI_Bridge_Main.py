@@ -1,4 +1,5 @@
 # XAI_Bridge_Main.py
+from io import StringIO
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -7,6 +8,25 @@ import pandas as pd
 import shap
 import streamlit as st
 from shap import Explanation
+
+
+def display_figure_as_svg(fig):
+    """Render a Matplotlib figure in Streamlit as an SVG vector image."""
+    svg_buffer = StringIO()
+
+    fig.savefig(
+        svg_buffer,
+        format="svg",
+        bbox_inches="tight",
+        facecolor="white",
+    )
+
+    svg_text = svg_buffer.getvalue()
+
+    st.image(
+        svg_text,
+        use_container_width=True,
+    )
 
 
 def main():
@@ -363,7 +383,7 @@ def main():
     def render_waterfall(explanation, title):
         st.subheader(title)
 
-        plt.figure(figsize=(8, 7), dpi=600)
+        plt.figure(figsize=(8, 7))
         shap.plots.waterfall(
             explanation[0],
             max_display=len(display_feature_names),
@@ -385,7 +405,7 @@ def main():
             text_item.set_fontsize(annotation_font_size)
 
         fig.tight_layout()
-        st.pyplot(fig, clear_figure=True)
+        display_figure_as_svg(fig)
         plt.close(fig)
 
     # ─── Render waterfall plots ───────────────────────────────────────────────────
@@ -412,7 +432,9 @@ def main():
         return
 
     # Display the environmental-condition feature as a categorical variable.
-
+    # SHAP renders categorical/string feature values in gray in beeswarm plots.
+    # Assign by column name rather than .iloc so pandas can safely change the
+    # column dtype from numeric to object/string.
     env_feature_position = 3
     env_feature_column = year_feature_columns[env_feature_position]
 
@@ -475,7 +497,7 @@ def main():
     def render_beeswarm(explanation, title):
         st.subheader(title)
 
-        plt.figure(figsize=(8, 7), dpi=600)
+        plt.figure(figsize=(8, 7))
         shap.plots.beeswarm(
             explanation,
             max_display=len(display_feature_names),
@@ -494,7 +516,7 @@ def main():
         )
 
         fig.tight_layout()
-        st.pyplot(fig, clear_figure=True)
+        display_figure_as_svg(fig)
         plt.close(fig)
 
     # ─── Render beeswarm plots ────────────────────────────────────────────────────
