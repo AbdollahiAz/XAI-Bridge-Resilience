@@ -227,9 +227,7 @@ def main():
         )
         return
 
-    # The SHAP spreadsheets may contain older LaTeX column names that do not
-    # exactly match the headers in the Year spreadsheet. The model features are
-    # therefore aligned by their established column order.
+    
     target_col = year_df.columns[-1]
     year_feature_columns = [
         column for column in year_df.columns if column != target_col
@@ -245,7 +243,6 @@ def main():
         st.write("SHAP feature columns:", shap_feature_columns)
         return
 
-    # Clean labels shown in waterfall and beeswarm plots.
     display_feature_names = [
         r"$\mathrm{Time}$",
         r"$D_{\mathrm{sc}}$",
@@ -305,9 +302,7 @@ def main():
         st.error("The matching row index is outside the Independence SHAP file.")
         return
 
-    # ─── Show the true resilience value ───────────────────────────────────────────
-    st.subheader("True resilience index")
-
+    # ─── Retrieve the ground-truth resilience value ───────────────────────────────
     true_val = pd.to_numeric(
         pd.Series([matches.iloc[0][target_col]]),
         errors="coerce",
@@ -318,8 +313,6 @@ def main():
             f"The target value in column '{target_col}' is not numeric."
         )
         return
-
-    st.write(f"**{target_col} = {true_val:.6f}**")
 
     # ─── Prepare feature values for the selected row ──────────────────────────────
     selected_features = matches.loc[:, year_feature_columns].iloc[0]
@@ -348,6 +341,24 @@ def main():
         st.error(f"Error creating the row-level SHAP explanations: {exc}")
         return
 
+    # ─── Show the ground-truth and predicted resilience values ────────────────────
+    predicted_val = (
+        float(np.asarray(expl_va_row.base_values).reshape(-1)[0])
+        + float(np.asarray(expl_va_row.values).sum())
+    )
+
+    st.subheader("Resilience index")
+
+    st.markdown(
+        f"""
+<div style="display: flex; align-items: center; gap: 48px; flex-wrap: wrap;">
+    <div>• <strong>Ground truth value = {true_val:.6f}</strong></div>
+    <div>• <strong>Predicted value = {predicted_val:.6f}</strong></div>
+</div>
+""",
+        unsafe_allow_html=True,
+    )
+
     # ─── Plotting settings ────────────────────────────────────────────────────────
     tick_font_size = 12
     annotation_font_size = 12
@@ -355,14 +366,6 @@ def main():
 
     def render_waterfall(explanation, title):
         st.subheader(title)
-
-        predicted_resilience = (
-            float(np.asarray(explanation.base_values).reshape(-1)[0])
-            + float(np.asarray(explanation.values).sum())
-        )
-        st.write(
-            f"**Predicted resilience = {predicted_resilience:.6f}**"
-        )
 
         plt.figure(figsize=(8, 7), dpi=110)
         shap.plots.waterfall(
@@ -413,9 +416,7 @@ def main():
         return
 
     # Display the environmental-condition feature as a categorical variable.
-    # SHAP renders categorical/string feature values in gray in beeswarm plots.
-    # Assign by column name rather than .iloc so pandas can safely change the
-    # column dtype from numeric to object/string.
+
     env_feature_position = 3
     env_feature_column = year_feature_columns[env_feature_position]
 
