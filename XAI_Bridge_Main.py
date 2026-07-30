@@ -204,8 +204,7 @@ def main():
         st.error("Both SHAP files must contain a column named 'base'.")
         return
 
-    # Keep the original Excel headers for reading values, but use clean
-    # mathematical labels only for displaying the SHAP plots.
+  
     shap_feature_columns = [
         column for column in shap_df_va.columns if column != "base"
     ]
@@ -243,6 +242,7 @@ def main():
         st.write("SHAP feature columns:", shap_feature_columns)
         return
 
+    # Clean labels shown in waterfall and beeswarm plots.
     display_feature_names = [
         r"$\mathrm{Time}$",
         r"$D_{\mathrm{sc}}$",
@@ -351,7 +351,13 @@ def main():
 
     st.markdown(
         f"""
-<div style="display: flex; align-items: center; gap: 48px; flex-wrap: wrap;">
+<div style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+">
     <div>• <strong>Ground truth value = {true_val:.6f}</strong></div>
     <div>• <strong>Predicted value = {predicted_val:.6f}</strong></div>
 </div>
@@ -367,7 +373,7 @@ def main():
     def render_waterfall(explanation, title):
         st.subheader(title)
 
-        plt.figure(figsize=(8, 7), dpi=110)
+        plt.figure(figsize=(8, 7), dpi=300)
         shap.plots.waterfall(
             explanation[0],
             max_display=len(display_feature_names),
@@ -416,7 +422,7 @@ def main():
         return
 
     # Display the environmental-condition feature as a categorical variable.
-
+   
     env_feature_position = 3
     env_feature_column = year_feature_columns[env_feature_position]
 
@@ -479,7 +485,7 @@ def main():
     def render_beeswarm(explanation, title):
         st.subheader(title)
 
-        plt.figure(figsize=(8, 7), dpi=110)
+        plt.figure(figsize=(8, 7), dpi=300)
         shap.plots.beeswarm(
             explanation,
             max_display=len(display_feature_names),
