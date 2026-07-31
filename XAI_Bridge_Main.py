@@ -1,4 +1,5 @@
 # XAI_Bridge_Main.py
+import base64
 from io import StringIO
 from pathlib import Path
 
@@ -40,15 +41,45 @@ def main():
     app_dir = Path(__file__).resolve().parent
 
     # ─── Sidebar logo and input parameters ────────────────────────────────────────
-    logo_path = app_dir / "bridge.png"
+    logo_path = app_dir / "bridge.svg"
+
     if logo_path.exists():
-        st.sidebar.image(
-            str(logo_path),
-            caption="XAI-Bridge-Resilience App",
-            width=270,
+        svg_bytes = logo_path.read_bytes()
+        svg_base64 = base64.b64encode(svg_bytes).decode("utf-8")
+
+        st.sidebar.markdown(
+            f"""
+<div style="
+    width: 270px;
+    max-width: 100%;
+    margin: 0 auto;
+    text-align: center;
+">
+    <img
+        src="data:image/svg+xml;base64,{svg_base64}"
+        alt="XAI-Bridge-Resilience"
+        style="
+            width: 270px;
+            height: 270px;
+            max-width: 100%;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        "
+    />
+    <div style="
+        margin-top: 0.25rem;
+        font-size: 0.85rem;
+        color: rgba(49, 51, 63, 0.65);
+    ">
+        XAI-Bridge-Resilience App
+    </div>
+</div>
+""",
+            unsafe_allow_html=True,
         )
     else:
-        st.sidebar.warning("The file bridge.png was not found.")
+        st.sidebar.warning("The file bridge.svg was not found.")
 
     env_labels = {
         1: "Benign",
@@ -145,33 +176,49 @@ def main():
     # ─── Parameter definitions ────────────────────────────────────────────────────
     st.write("**🔷 Parameter definitions:**")
 
-    cols = st.columns(3)
-    labels_row1 = [
-        r"$\mathrm{Time}$: Post-flood time [days]",
-        r"$D_{\mathrm{sc}}$: Scour depth [m]",
-        r"$\mathrm{Span}\,\#$: Number of spans",
-    ]
+    # First row: Age, scour depth, and number of spans
+    row1_cols = st.columns(3)
 
-    for col, label in zip(cols, labels_row1):
-        col.markdown(f"- {label}")
+    row1_cols[0].markdown(
+        r"- $\mathrm{Age}$: Bridge age [year]"
+    )
+    row1_cols[1].markdown(
+        r"- $D_{\mathrm{sc}}$: Scour depth [m]"
+    )
+    row1_cols[2].markdown(
+        r"- $\mathrm{Span}\,\#$: Number of spans [–]"
+    )
 
-    st.markdown(
+    # Second row: post-flood time and environmental condition
+    row2_cols = st.columns(2)
+
+    row2_cols[0].markdown(
+        r"- $\mathrm{Time}$: Post-flood time [day]"
+    )
+    row2_cols[1].markdown(
         r"- $\mathrm{Env}_{\mathrm{cond}}$: Environmental condition "
-        r"(benign, low, moderate, severe)"
+        r"[benign, low, moderate, severe]"
     )
 
+    # Third row: damage-state probabilities
     st.markdown(
-        r"- $\Pr(\mathrm{DS}_{\mathrm{no}})$, $\Pr(\mathrm{DS}_{\mathrm{min}})$, "
-        r"$\Pr(\mathrm{DS}_{\mathrm{mod}})$, $\Pr(\mathrm{DS}_{\mathrm{ext}})$, and "
-        r"$\Pr(\mathrm{DS}_{\mathrm{sev}})$: Probabilities of being in the no-damage, "
-        r"minor, moderate, extensive, and severe damage states"
+        r"- $\Pr(\mathrm{DS}_{\mathrm{no}})$, "
+        r"$\Pr(\mathrm{DS}_{\mathrm{min}})$, "
+        r"$\Pr(\mathrm{DS}_{\mathrm{mod}})$, "
+        r"$\Pr(\mathrm{DS}_{\mathrm{ext}})$, and "
+        r"$\Pr(\mathrm{DS}_{\mathrm{sev}})$: "
+        r"Probabilities of being in the no-damage, minor, moderate, "
+        r"extensive, and severe damage states [–]"
     )
 
+    # Fourth row: post-flood capacity ratios
     st.markdown(
-        r"- $\mathrm{Rest}_{\mathrm{min}}$, $\mathrm{Rest}_{\mathrm{mod}}$, "
-        r"$\mathrm{Rest}_{\mathrm{ext}}$, and $\mathrm{Rest}_{\mathrm{sev}}$: "
+        r"- $\mathrm{Rest}_{\mathrm{min}}$, "
+        r"$\mathrm{Rest}_{\mathrm{mod}}$, "
+        r"$\mathrm{Rest}_{\mathrm{ext}}$, and "
+        r"$\mathrm{Rest}_{\mathrm{sev}}$: "
         r"Post-flood capacity ratios (PFCRs) associated with the minor, "
-        r"moderate, extensive, and severe damage states"
+        r"moderate, extensive, and severe damage states [–]"
     )
 
     if not run:
